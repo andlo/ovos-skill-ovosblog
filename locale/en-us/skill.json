@@ -9,5 +9,5 @@
   "description": "Reads the OpenVoiceOS blog aloud. Provider for ovos-common-reading-pipeline-plugin - no standalone voice interface.",
   "examples": [],
   "tags": ["news", "blog", "openvoiceos", "rss", "provider"],
-  "icon": "https://raw.githubusercontent.com/andlo/ovos-skill-ovosblog/main/rss-512.png"
+  "icon": "https://raw.githubusercontent.com/andlo/ovos-skill-ovosblog/main/world-512.png"
 }

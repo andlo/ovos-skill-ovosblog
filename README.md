@@ -1,4 +1,4 @@
-# <img src='rss-512.png' card_color='#40DBB0' width='50' height='50' style='vertical-align:bottom'/> OVOS Blog
+# <img src='world-512.png' card_color='#40DBB0' width='50' height='50' style='vertical-align:bottom'/> OVOS Blog
 
 A *provider* skill for [ovos-common-reading-pipeline-plugin](https://github.com/andlo/ovos-common-reading-pipeline-plugin),
 reading the [OpenVoiceOS blog](https://blog.openvoiceos.org/) aloud.
