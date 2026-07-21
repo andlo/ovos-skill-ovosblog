@@ -21,14 +21,15 @@ def _sample_index():
 
 
 def test_handle_search_matches_by_phrase(skill):
+    # default fixture lang is en-us, so titles pass through untranslated
     skill.index = _sample_index()
-    skill._maybe_translate_text = MagicMock(return_value=("Boring installs on macOS", False))
 
     skill.handle_search(make_message({"phrase": "boring installs macos"}))
 
     sent = skill.bus.emit.call_args[0][0]
     assert sent.msg_type == COMMON_READING_SEARCH_RESPONSE
     assert sent.data["content_id"] == "https://example.test/a"
+    assert sent.data["title"] == "Boring installs on macOS"
     assert sent.data["author"] == "Alice"
     assert sent.data["source"] == "blog.openvoiceos.org"
     assert sent.data["machine_translated"] is False
@@ -42,7 +43,6 @@ def test_handle_search_no_phrase_no_hint_stays_silent(skill):
 
 def test_handle_search_surprise_me_picks_latest(skill):
     skill.index = _sample_index()
-    skill._maybe_translate_text = MagicMock(return_value=("New release notes", False))
 
     skill.handle_search(make_message({"phrase": None, "collection_hint": "ovos blog"}))
 
@@ -64,20 +64,8 @@ def test_handle_search_stays_silent_for_mismatched_content_type(skill):
 
 def test_handle_search_responds_for_matching_content_type(skill):
     skill.index = _sample_index()
-    skill._maybe_translate_text = MagicMock(return_value=("Boring installs on macOS", False))
     skill.handle_search(make_message({"phrase": "boring installs", "content_type": "article"}))
     skill.bus.emit.assert_called_once()
-
-
-def test_handle_search_reports_machine_translated_flag(skill):
-    skill.index = _sample_index()
-    skill._maybe_translate_text = MagicMock(return_value=("Installations ennuyeuses", True))
-
-    skill.handle_search(make_message({"phrase": "boring installs"}))
-
-    sent = skill.bus.emit.call_args[0][0]
-    assert sent.data["machine_translated"] is True
-    assert sent.data["title"] == "Installations ennuyeuses"
 
 
 def test_handle_fetch_content_returns_translated_paragraphs(skill):

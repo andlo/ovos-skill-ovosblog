@@ -41,4 +41,5 @@ def skill(tmp_path, monkeypatch):
     s.index = {}
     s._translator = None
     s._translator_failed = False
+    s._translated_titles_cache = {}
     return s

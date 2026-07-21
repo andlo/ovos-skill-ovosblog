@@ -29,9 +29,14 @@ If the device language isn't English (the feed's own language), articles
 are machine-translated on the fly via whatever ovos-plugin-manager
 language translation plugin is configured, and the response is flagged
 'machine_translated: true' so ovos-skill-common-reading can disclose that
-before reading it aloud. If no translation plugin is available, this
-provider falls back to serving the original English text rather than
-failing outright.
+before reading it aloud.
+
+Matching against a spoken phrase happens against *translated* titles,
+not the original English ones - a Danish user says a Danish phrase, so
+that's what has to be matched against. If no translation plugin is
+available at all, this provider doesn't offer anything for a non-English
+device - it stays silent on search rather than claiming to have content
+it can't actually deliver in the right language.
 """
 
 from ovos_workshop.skills import OVOSSkill
@@ -84,6 +89,7 @@ class OVOSBlog(OVOSSkill):
         self.index = {}  # link -> {title, author, html, pubdate}
         self._translator = None
         self._translator_failed = False
+        self._translated_titles_cache = {}  # lang_code -> {content_id: translated_title}
         self.refresh_index()
         self.add_event(COMMON_READING_SEARCH, self.handle_search)
         self.add_event(f"{COMMON_READING_FETCH_CONTENT}.{self.skill_id}", self.handle_fetch_content)
@@ -114,15 +120,18 @@ class OVOSBlog(OVOSSkill):
         cached = self._read_index_cache()
         if not force and cached and (time.time() - cached.get("timestamp", 0)) < self.INDEX_CACHE_TTL:
             self.index = cached.get("index", {})
+            self._translated_titles_cache.clear()
             return
         try:
             self.index = self.fetch_feed_index()
             self._write_index_cache()
+            self._translated_titles_cache.clear()
         except FeedFetchError as e:
             self.log.error(f"Could not refresh blog feed index: {e}")
             if cached:
                 self.log.warning("Falling back to previously cached (possibly stale) feed index")
                 self.index = cached.get("index", {})
+                self._translated_titles_cache.clear()
 
     def fetch_feed_index(self):
         try:
@@ -189,18 +198,35 @@ class OVOSBlog(OVOSSkill):
                 self._translator_failed = True
         return self._translator
 
-    def _maybe_translate_text(self, text, lang):
+    def _get_translated_titles(self, lang):
+        """Return {content_id: title} to match/announce against, in the
+        given language. For English this is just the original titles.
+        For anything else, returns None if no translation plugin is
+        available or translation fails - callers MUST treat None as
+        'we cannot offer anything in this language', not silently fall
+        back to English titles (see module docstring)."""
         target = lang.split("-")[0]
-        if target == "en" or not text:
-            return text, False
+        if target == "en":
+            return {link: entry["title"] for link, entry in self.index.items()}
+
+        cached = self._translated_titles_cache.get(target)
+        if cached is not None:
+            return cached
+
         translator = self._get_translator()
         if translator is None:
-            return text, False
+            return None
+
+        translated = {}
         try:
-            return translator.translate(text, target=target, source="en"), True
+            for link, entry in self.index.items():
+                translated[link] = translator.translate(entry["title"], target=target, source="en")
         except Exception as e:
-            self.log.warning(f"translation failed, falling back to English: {e}")
-            return text, False
+            self.log.warning(f"failed to translate titles to '{target}': {e}")
+            return None
+
+        self._translated_titles_cache[target] = translated
+        return translated
 
     def _maybe_translate_paragraphs(self, paragraphs, lang):
         target = lang.split("-")[0]
@@ -237,8 +263,13 @@ class OVOSBlog(OVOSSkill):
         if not self._matches_content_type(content_type):
             return
 
+        titles = self._get_translated_titles(self.lang)
+        if titles is None:
+            # can't offer anything in this language without a translator -
+            # stay silent rather than claim content we can't deliver
+            return
+
         phrase = message.data.get("phrase")
-        titles = {link: entry["title"] for link, entry in self.index.items()}
         if phrase:
             title, confidence = match_one(phrase, list(titles.values()))
             link = next(l for l, t in titles.items() if t == title)
@@ -246,22 +277,20 @@ class OVOSBlog(OVOSSkill):
             # 'read me the OVOS blog' with no specific article named -
             # offer the most recent post
             link = self._latest_link()
-            title = self.index[link]["title"]
+            title = titles[link]
             confidence = 1.0
         else:
             return
 
-        translated_title, was_translated = self._maybe_translate_text(title, self.lang)
-
         self.bus.emit(message.reply(COMMON_READING_SEARCH_RESPONSE, {
             "skill_id": self.skill_id,
             "content_id": link,
-            "title": translated_title,
+            "title": title,
             "author": self.index[link].get("author") or "",
             "collection": COLLECTION_NAME,
             "source": SOURCE_NAME,
             "confidence": confidence,
-            "machine_translated": was_translated,
+            "machine_translated": self.lang.split("-")[0] != "en",
         }))
 
     def handle_fetch_content(self, message):

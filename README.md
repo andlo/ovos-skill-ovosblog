@@ -30,9 +30,13 @@ summary, so no separate page fetch is needed - just the feed itself
 ## Translation
 
 The feed is English-only. If the device language isn't English, this
-provider machine-translates the title (for the search response) and the
-full article text (for the read-aloud response) using whatever
-[ovos-plugin-manager](https://github.com/OpenVoiceOS/ovos-plugin-manager)
+provider machine-translates:
+- **titles**, before matching a spoken phrase against them (a Danish
+  user speaks a Danish phrase, so that's what has to be matched - not
+  the English original), and
+- the **full article text**, when actually reading it aloud.
+
+using whatever [ovos-plugin-manager](https://github.com/OpenVoiceOS/ovos-plugin-manager)
 language-translation plugin is configured
 (`OVOSLangTranslationFactory.create()`).
 
@@ -41,10 +45,11 @@ field - `ovos-skill-common-reading` is expected to disclose this before
 reading the content aloud, so users know it's a machine translation
 rather than an original-language text.
 
-If no translation plugin is installed/configured at all, this provider
-falls back to serving the original English text (`machine_translated:
-false`, since nothing was actually translated) rather than failing
-outright.
+**If no translation plugin is installed/configured, this provider does
+not respond to searches at all for a non-English device** - it would be
+misleading to offer an article it can only actually deliver in English
+when the user asked in (and expects) their own language. (English
+devices never need a translator and always get a response.)
 
 ## Collection hints
 
