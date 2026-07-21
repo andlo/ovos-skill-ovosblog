@@ -1,0 +1,13 @@
+{
+  "skill_id": "ovos-skill-ovosblog.andlo",
+  "source": "https://github.com/andlo/ovos-skill-ovosblog",
+  "package_name": "ovos-skill-ovosblog",
+  "pip_spec": "ovos-skill-ovosblog",
+  "license": "GPL-3.0-or-later",
+  "author": "andlo",
+  "name": "OVOS Blog (provider)",
+  "description": "Reads the OpenVoiceOS blog aloud. Provider for ovos-skill-common-reading - no standalone voice interface.",
+  "examples": [],
+  "tags": ["news", "blog", "openvoiceos", "rss", "provider"],
+  "icon": "https://raw.githubusercontent.com/andlo/ovos-skill-ovosblog/main/rss-512.png"
+}

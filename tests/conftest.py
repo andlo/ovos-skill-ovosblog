@@ -1,0 +1,44 @@
+"""Shared pytest fixtures for the ovosblog skill test suite."""
+import importlib.util
+from pathlib import Path
+from unittest.mock import MagicMock
+
+import pytest
+
+_INIT_PATH = Path(__file__).resolve().parents[1] / "__init__.py"
+_spec = importlib.util.spec_from_file_location("ovosblog_skill", _INIT_PATH)
+_module = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_module)
+
+OVOSBlog = _module.OVOSBlog
+FeedFetchError = _module.FeedFetchError
+COMMON_READING_SEARCH_RESPONSE = _module.COMMON_READING_SEARCH_RESPONSE
+COMMON_READING_FETCH_CONTENT_RESPONSE = _module.COMMON_READING_FETCH_CONTENT_RESPONSE
+
+
+class FakeFileSystem:
+    def __init__(self, base):
+        self.base = base
+        self.path = str(base)
+
+    def exists(self, name):
+        return (self.base / name).exists()
+
+    def open(self, name, mode="r"):
+        return open(self.base / name, mode)
+
+
+@pytest.fixture
+def skill(tmp_path, monkeypatch):
+    s = OVOSBlog.__new__(OVOSBlog)
+    s.log = MagicMock()
+    s.skill_id = "ovos-skill-ovosblog.test"
+    s.status = MagicMock()
+    s._bus = MagicMock()
+    s._settings = {}
+    monkeypatch.setattr(OVOSBlog, "lang", "en-us", raising=False)
+    s.file_system = FakeFileSystem(tmp_path)
+    s.index = {}
+    s._translator = None
+    s._translator_failed = False
+    return s
