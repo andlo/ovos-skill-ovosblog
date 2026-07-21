@@ -51,6 +51,14 @@ misleading to offer an article it can only actually deliver in English
 when the user asked in (and expects) their own language. (English
 devices never need a translator and always get a response.)
 
+**Note for anyone comparing providers:** unlike
+`ovos-skill-andersen-tales`/`ovos-skill-grimm-tales`/
+`ovos-skill-andrew-lang-tales`, which check a fixed `SUPPORTED_LANGUAGES`
+set at load time and refuse to load at all otherwise, this provider
+*always* loads regardless of device language - it can't know in advance
+whether a translation plugin will be available, so it always registers
+its bus events and decides per-search instead (see above).
+
 ## Collection hints
 
 Responds to `collection_hint` values like "openvoiceos blog", "ovos
