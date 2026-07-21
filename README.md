@@ -1,6 +1,6 @@
 # <img src='rss-512.png' card_color='#40DBB0' width='50' height='50' style='vertical-align:bottom'/> OVOS Blog
 
-A *provider* skill for [ovos-skill-common-reading](https://github.com/andlo/ovos-skill-common-reading),
+A *provider* skill for [ovos-common-reading-pipeline-plugin](https://github.com/andlo/ovos-common-reading-pipeline-plugin),
 reading the [OpenVoiceOS blog](https://blog.openvoiceos.org/) aloud.
 
 This exists to prove a point: **common-reading isn't just for fairy
@@ -11,13 +11,13 @@ tales.** It's an "article" provider, not a storyteller.
 
 > **This skill has no standalone voice interface.** It registers no
 > intents and never speaks. It only answers
-> [ovos.common_reading.* bus messages](https://github.com/andlo/ovos-skill-common-reading#the-ovoscommon_reading-bus-protocol),
-> so you also need **ovos-skill-common-reading** installed for it to be
-> useful at all.
+> [ovos.common_reading.* bus messages](https://github.com/andlo/ovos-common-reading-pipeline-plugin#the-ovoscommon_reading-bus-protocol),
+> so you also need **ovos-common-reading-pipeline-plugin** installed and
+> added to your pipeline config for it to be useful at all.
 
 ## Install
 ```bash
-pip install ovos-skill-ovosblog ovos-skill-common-reading
+pip install ovos-skill-ovosblog ovos-common-reading-pipeline-plugin
 ```
 
 ## Source
@@ -41,7 +41,7 @@ language-translation plugin is configured
 (`OVOSLangTranslationFactory.create()`).
 
 Every search response includes a `"machine_translated": true/false`
-field - `ovos-skill-common-reading` is expected to disclose this before
+field - `ovos-common-reading-pipeline-plugin` is expected to disclose this before
 reading the content aloud, so users know it's a machine translation
 rather than an original-language text.
 

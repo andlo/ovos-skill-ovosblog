@@ -6,7 +6,7 @@
   "license": "GPL-3.0-or-later",
   "author": "andlo",
   "name": "OVOS Blog (provider)",
-  "description": "Reads the OpenVoiceOS blog aloud. Provider for ovos-skill-common-reading - no standalone voice interface.",
+  "description": "Reads the OpenVoiceOS blog aloud. Provider for ovos-common-reading-pipeline-plugin - no standalone voice interface.",
   "examples": [],
   "tags": ["news", "blog", "openvoiceos", "rss", "provider"],
   "icon": "https://raw.githubusercontent.com/andlo/ovos-skill-ovosblog/main/rss-512.png"
