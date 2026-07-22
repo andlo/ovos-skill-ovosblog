@@ -1,7 +1,7 @@
 """Tests for handle_search / handle_fetch_content."""
 from unittest.mock import MagicMock
 
-from conftest import COMMON_READING_SEARCH_RESPONSE, COMMON_READING_FETCH_CONTENT_RESPONSE
+from conftest import COMMON_READING_SEARCH_RESPONSE, COMMON_READING_FETCH_CONTENT_RESPONSE, COMMON_READING_PONG
 
 
 def make_message(data=None):
@@ -84,3 +84,20 @@ def test_handle_fetch_content_unknown_id_returns_empty(skill):
     skill.handle_fetch_content(make_message({"content_id": "nonexistent"}))
     sent = skill.bus.emit.call_args[0][0]
     assert sent.data["paragraphs"] == []
+
+
+def test_handle_ping_replies_with_pong(skill):
+    skill.handle_ping(make_message())
+
+    sent = skill.bus.emit.call_args[0][0]
+    assert sent.msg_type == COMMON_READING_PONG
+    assert sent.data["skill_id"] == skill.skill_id
+    assert sent.data["collection"] == "the OpenVoiceOS Blog"
+
+
+def test_handle_ping_does_not_touch_the_index(skill):
+    skill.index = None
+
+    skill.handle_ping(make_message())
+
+    skill.bus.emit.assert_called_once()
