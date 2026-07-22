@@ -1,0 +1,13 @@
+{
+  "skill_id": "ovos-skill-ovosblog.andlo",
+  "source": "https://github.com/andlo/ovos-skill-ovosblog",
+  "package_name": "ovos-skill-ovosblog",
+  "pip_spec": "ovos-skill-ovosblog",
+  "license": "GPL-3.0-or-later",
+  "author": "andlo",
+  "name": "OVOS Blog (aanbieder)",
+  "description": "Leest de OpenVoiceOS-blog hardop voor. Aanbieder voor ovos-common-reading-pipeline-plugin. Geen zelfstandige spraakinterface.",
+  "examples": [],
+  "tags": ["news", "blog", "openvoiceos", "rss", "provider"],
+  "icon": "https://raw.githubusercontent.com/andlo/ovos-skill-ovosblog/main/world-512.png"
+}

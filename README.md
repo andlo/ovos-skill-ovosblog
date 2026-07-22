@@ -61,8 +61,16 @@ its bus events and decides per-search instead (see above).
 
 ## Collection hints
 
-Responds to `collection_hint` values like "openvoiceos blog", "ovos
-blog", "open voice os blog".
+Responds to `collection_hint` values in the *device's own language* -
+e.g. "ovos blog"/"openvoiceos blog" on English, "ovos nyheder" on
+Danish, "blog de ovos" on Spanish - matched fuzzily against that
+language's own alias list (see `locale/<lang>/collection.voc`). Unlike
+`ovos-skill-andersen-tales`/`ovos-skill-grimm-tales` (a fixed set of
+languages), this provider works on *any* device language, so aliases
+fall back to English for any language we haven't bothered translating
+- see [ovos-common-reading-pipeline-plugin#26](https://github.com/andlo/ovos-common-reading-pipeline-plugin/issues/26).
+The collection name itself ("the OpenVoiceOS Blog") stays untranslated
+- it's a proper noun, not a generic phrase.
 
 ## Content type
 
