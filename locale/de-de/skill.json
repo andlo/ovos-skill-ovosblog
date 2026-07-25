@@ -7,7 +7,16 @@
   "author": "andlo",
   "name": "OVOS Blog (Anbieter)",
   "description": "Liest den OpenVoiceOS-Blog vor. Anbieter für ovos-common-reading-pipeline-plugin. Keine eigenständige Sprachschnittstelle.",
-  "examples": [],
-  "tags": ["news", "blog", "openvoiceos", "rss", "provider"],
+  "examples": [
+    "Erzähl mir eine Geschichte von ovos blog",
+    "Lies mir eine Geschichte von ovos blog"
+  ],
+  "tags": [
+    "news",
+    "blog",
+    "openvoiceos",
+    "rss",
+    "provider"
+  ],
   "icon": "https://raw.githubusercontent.com/andlo/ovos-skill-ovosblog/main/world-512.png"
 }

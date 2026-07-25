@@ -7,7 +7,16 @@
   "author": "andlo",
   "name": "OVOS Blog (udbyder)",
   "description": "Læser OpenVoiceOS-bloggen højt. Udbyder til ovos-common-reading-pipeline-plugin. Ingen selvstændig stemmegrænseflade.",
-  "examples": [],
-  "tags": ["news", "blog", "openvoiceos", "rss", "provider"],
+  "examples": [
+    "Fortæl mig en historie fra ovos blog",
+    "Læs mig et eventyr fra ovos blog"
+  ],
+  "tags": [
+    "news",
+    "blog",
+    "openvoiceos",
+    "rss",
+    "provider"
+  ],
   "icon": "https://raw.githubusercontent.com/andlo/ovos-skill-ovosblog/main/world-512.png"
 }
