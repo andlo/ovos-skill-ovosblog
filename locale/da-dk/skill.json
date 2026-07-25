@@ -8,8 +8,7 @@
   "name": "OVOS Blog (udbyder)",
   "description": "Læser OpenVoiceOS-bloggen højt. Udbyder til ovos-common-reading-pipeline-plugin. Ingen selvstændig stemmegrænseflade.",
   "examples": [
-    "Fortæl mig en historie fra ovos blog",
-    "Læs mig et eventyr fra ovos blog"
+    "Læs mig seneste artikel fra ovosblog"
   ],
   "tags": [
     "news",

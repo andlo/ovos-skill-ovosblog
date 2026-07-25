@@ -8,8 +8,8 @@
   "name": "OVOS Blog (provider)",
   "description": "Reads the OpenVoiceOS blog aloud. Provider for ovos-common-reading-pipeline-plugin - no standalone voice interface.",
   "examples": [
-    "Tell me an article from the openvoiceos blog",
-    "Read me an article from ovos blog"
+    "Read latest post from ovosblog",
+    "Read newest post from the openvoiceos blog"
   ],
   "tags": [
     "news",
