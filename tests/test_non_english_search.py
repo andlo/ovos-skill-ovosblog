@@ -18,6 +18,7 @@ def _sample_index():
 
 def make_message(data=None):
     m = MagicMock()
+    m.context = {}
     m.data = data or {}
     m.reply = MagicMock(side_effect=lambda mtype, d: MagicMock(msg_type=mtype, data=d))
     return m
@@ -25,6 +26,7 @@ def make_message(data=None):
 
 def test_non_english_device_matches_against_translated_titles(skill, monkeypatch):
     monkeypatch.setattr(OVOSBlog, "lang", "da-dk", raising=False)
+    monkeypatch.setattr(OVOSBlog, "native_langs", ["da-dk"], raising=False)
     skill.index = _sample_index()
     fake_translator = MagicMock()
     translations = {"Boring installs": "Kedelige installationer", "New release": "Ny udgivelse"}
@@ -43,6 +45,7 @@ def test_non_english_device_matches_against_translated_titles(skill, monkeypatch
 
 def test_non_english_device_without_translator_stays_completely_silent(skill, monkeypatch):
     monkeypatch.setattr(OVOSBlog, "lang", "da-dk", raising=False)
+    monkeypatch.setattr(OVOSBlog, "native_langs", ["da-dk"], raising=False)
     skill.index = _sample_index()
     skill._get_translator = MagicMock(return_value=None)
 
@@ -53,6 +56,7 @@ def test_non_english_device_without_translator_stays_completely_silent(skill, mo
 
 def test_non_english_device_without_translator_declines_surprise_me_too(skill, monkeypatch):
     monkeypatch.setattr(OVOSBlog, "lang", "da-dk", raising=False)
+    monkeypatch.setattr(OVOSBlog, "native_langs", ["da-dk"], raising=False)
     skill.index = _sample_index()
     skill._get_translator = MagicMock(return_value=None)
 
@@ -63,6 +67,7 @@ def test_non_english_device_without_translator_declines_surprise_me_too(skill, m
 
 def test_english_device_never_needs_a_translator(skill, monkeypatch):
     monkeypatch.setattr(OVOSBlog, "lang", "en-us", raising=False)
+    monkeypatch.setattr(OVOSBlog, "native_langs", ["en-us"], raising=False)
     skill.index = _sample_index()
     skill._get_translator = MagicMock(side_effect=AssertionError("should never be called for English"))
 

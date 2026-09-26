@@ -29,6 +29,14 @@ summary, so no separate page fetch is needed - just the feed itself
 
 ## Translation
 
+**Only in configured languages.** It translates only into the languages
+this installation is configured for: the device's own `lang` plus
+`secondary_langs` in `mycroft.conf`. A search or ping in any other
+language gets no answer, so a request in a language nobody here speaks
+never loads a translation model or translates the title catalogue. A
+HiveMind hub serving users in several languages lists them in
+`secondary_langs`.
+
 The feed is English-only. If the device language isn't English, this
 provider machine-translates:
 - **titles**, before matching a spoken phrase against them (a Danish
