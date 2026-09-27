@@ -51,6 +51,21 @@ import xml.etree.ElementTree as ET
 import time
 import json
 
+
+def _user_agent():
+    """Say who is asking. Some sites answer python-requests' default
+    User-Agent with 403 (365tomorrows.com behind Cloudflare does), and a
+    descriptive one is what sites ask automated clients to send."""
+    try:
+        from importlib.metadata import version
+        ver = version("ovos-skill-ovosblog")
+    except Exception:
+        ver = "unknown"
+    return f"ovos-skill-ovosblog/{ver} (+https://github.com/andlo/ovos-skill-ovosblog)"
+
+
+HTTP_HEADERS = {"User-Agent": _user_agent()}
+
 FEED_URL = "https://blog.openvoiceos.org/feed.xml"
 DC_CREATOR_TAG = "{http://purl.org/dc/elements/1.1/}creator"
 
@@ -173,7 +188,7 @@ class OVOSBlog(OVOSSkill):
 
     def fetch_feed_index(self):
         try:
-            r = requests.get(FEED_URL, timeout=10)
+            r = requests.get(FEED_URL, timeout=10, headers=HTTP_HEADERS)
             r.raise_for_status()
         except requests.RequestException as e:
             raise FeedFetchError(f"failed to fetch {FEED_URL}: {e}") from e
@@ -209,7 +224,11 @@ class OVOSBlog(OVOSSkill):
             tag.unwrap()  # keep inline code text (e.g. `virtualenv`) as part of its sentence
         paragraphs = []
         for tag in soup.find_all(["h1", "h2", "h3", "p", "li"]):
-            text = tag.get_text(" ", strip=True)
+            # get_text() keeps the post's own spacing around inline tags;
+            # a " " separator put a space at every tag boundary, so a
+            # link or <code> before punctuation read "threshold ." and
+            # "False ," - a pause the TTS doesn't need
+            text = " ".join(tag.get_text().split())
             if text:
                 paragraphs.append(text)
         return paragraphs
