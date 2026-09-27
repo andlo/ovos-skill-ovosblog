@@ -102,3 +102,11 @@ def test_handle_ping_does_not_touch_the_index(skill):
     skill.handle_ping(make_message())
 
     skill.bus.emit.assert_called_once()
+
+
+def test_no_space_before_punctuation_after_inline_tags():
+    """A " " separator in get_text() put a space at every tag boundary:
+    "tighten <code>threshold</code>." read as "tighten threshold ."."""
+    from conftest import OVOSBlog
+    html = "<p>Tighten <code>threshold</code>. If it returns <b>False</b>, stop.</p><li>Edit <a href='#'>mycroft.conf</a>:</li>"
+    assert OVOSBlog.extract_paragraphs(html) == ["Tighten threshold. If it returns False, stop.", "Edit mycroft.conf:"]
